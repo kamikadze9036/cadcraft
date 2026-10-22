@@ -615,6 +615,9 @@ mod web {
                         let mut app = SolveApp::new(Session::default(), services).with_control(receiver);
                         if let Some(p) = cc.storage.and_then(|s| solidcraft_ui_egui::prefs::stored(|k| s.get_string(k))) {
                             app.load_prefs(&p);
+                        } else if web_sys::window().and_then(|w| w.navigator().language()).is_some_and(|l| l.to_lowercase().starts_with("cs")) {
+                            // First run in a Czech browser: start in Czech until the user chooses.
+                            app.preferences.language = "cs".into();
                         }
                         if let Some(rs) = &cc.wgpu_render_state {
                             // eframe's web painter has no stencil buffer.
